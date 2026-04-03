@@ -18,6 +18,10 @@ jobs:
         LICENSE_STRING: ${{ secrets.EAALICENSE }}
       run: |
         $licenseString = $env:LICENSE_STRING
+        if ([string]::IsNullOrWhiteSpace($licenseString)) {
+          Write-Error "EAALICENSE secret is not set or is empty. Failing workflow."
+          exit 1
+        }
         Write-Host "Running Deploy-EmbeddedEngineer script with license..."
         .\scripts\Deploy-EmbeddedEngineer.ps1 -LicenseString "$licenseString"
     
