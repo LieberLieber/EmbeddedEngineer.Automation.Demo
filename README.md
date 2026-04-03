@@ -142,8 +142,7 @@ This project uses **EmbeddedEngineer Automation** which requires a valid license
 ## 🆘 Support
 
 - **Issues**: [GitHub Issues](https://github.com/LieberLieber/EmbeddedEngineer.Automation.Demo/issues)
-- **Documentation**: [LieberLieber Support](https://www.lieberlieber.com/support/)
-- **Enterprise Architect Community**: [Forum](https://www.lieberlieber.com/forum/)
+- **Documentation**: [LieberLieber Support](https://help.lieberlieber.com/EmbeddedEngineer/Automation.html)
 
 ## 📊 CI/CD Status
 
