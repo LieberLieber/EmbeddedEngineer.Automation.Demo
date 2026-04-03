@@ -58,13 +58,13 @@ jobs:
         }
     
     -  name: Setup MSBuild Path
-       uses: microsoft/setup-msbuild@v1.1
+       uses: microsoft/setup-msbuild@v3
         
     -  name: Build Solution
        run: msbuild TrafficLight/visualstudio/TrafficLights.sln /p:Configuration=Release
 
     -  name: Publish Binary Artifact
-       uses: actions/upload-artifact@v4
+       uses: actions/upload-artifact@v7.0.0
        with:
           name: TrafficLightBinary
           path: .\TrafficLight\visualstudio\x64\Release\*.exe
