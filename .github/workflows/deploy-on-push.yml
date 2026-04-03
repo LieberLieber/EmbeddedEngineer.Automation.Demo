@@ -1,0 +1,51 @@
+name: Deploy EmbeddedEngineer on Push
+
+on:
+  push:
+    branches: [ main, develop ]
+
+jobs:
+  deploy:
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Deploy EmbeddedEngineer
+      shell: pwsh
+      env:
+        LICENSE_STRING: ${{ secrets.EAALICENSE }}
+      run: |
+        $licenseString = $env:LICENSE_STRING
+        Write-Host "Running Deploy-EmbeddedEngineer script with license..."
+        .\scripts\Deploy-EmbeddedEngineer.ps1 -LicenseString "$licenseString"
+    
+    - name: Verify deployment
+      shell: pwsh
+      run: |
+        if (Test-Path ".\eea.lic") {
+          Write-Host "License file created successfully"
+        } else {
+          Write-Host "Warning: License file not found"
+        }
+        
+        if (Test-Path ".\EEA\") {
+          Write-Host "EmbeddedEngineer extracted successfully"
+          Get-ChildItem -Path ".\EEA\"
+        } else {
+          Write-Host "Warning: EmbeddedEngineer directory not found"
+        }
+    
+    - name: Run EmbeddedEngineer Automation
+      shell: pwsh
+      run: |
+        Write-Host "Running EmbeddedEngineer Automation..."
+        .\eea\EmbeddedEngineer.Automation.exe --Model .\TraficLight.github.qeax --License .\eea.lic --PackageGuid "`{904EF962-C541-4627-A463-AD6F1328BFB3`}"
+        
+        if ($LASTEXITCODE -eq 0) {
+          Write-Host "EmbeddedEngineer Automation completed successfully"
+        } else {
+          Write-Host "EmbeddedEngineer Automation failed with exit code: $LASTEXITCODE"
+          exit $LASTEXITCODE
+        }
