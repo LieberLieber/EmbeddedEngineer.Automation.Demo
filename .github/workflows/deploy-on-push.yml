@@ -10,16 +10,18 @@ jobs:
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6.0.2
+      with:  
+        lfs: true
     
     - name: Deploy EmbeddedEngineer
       shell: pwsh
       env:
-        LICENSE_STRING: ${{ secrets.EAALICENSE }}
+        LICENSE_STRING: ${{ secrets.EEALICENSE }}
       run: |
         $licenseString = $env:LICENSE_STRING
         if ([string]::IsNullOrWhiteSpace($licenseString)) {
-          Write-Error "EAALICENSE secret is not set or is empty. Failing workflow."
+          Write-Error "EEALICENSE secret is not set or is empty. Failing workflow."
           exit 1
         }
         Write-Host "Running Deploy-EmbeddedEngineer script with license..."
