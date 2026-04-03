@@ -2,10 +2,9 @@ name: Deploy EmbeddedEngineer on Push
 
 on:
   push:
-    branches: [ main, develop ]
 
 jobs:
-  deploy:
+  generatecode:
     runs-on: windows-latest
     
     steps:
@@ -21,7 +20,7 @@ jobs:
       run: |
         $licenseString = $env:LICENSE_STRING
         if ([string]::IsNullOrWhiteSpace($licenseString)) {
-          Write-Error "EEALICENSE secret is not set or is empty. Failing workflow."
+          Write-Error "Error: EEALICENSE secret is not set or is empty. Failing workflow."
           exit 1
         }
         Write-Host "Running Deploy-EmbeddedEngineer script with license..."
@@ -33,14 +32,16 @@ jobs:
         if (Test-Path ".\eea.lic") {
           Write-Host "License file created successfully"
         } else {
-          Write-Host "Warning: License file not found"
+          Write-Host "Error: License file not found"
+          exit 1
         }
         
         if (Test-Path ".\EEA\") {
           Write-Host "EmbeddedEngineer extracted successfully"
           Get-ChildItem -Path ".\EEA\"
         } else {
-          Write-Host "Warning: EmbeddedEngineer directory not found"
+          Write-Host "Error: EmbeddedEngineer directory not found"
+          exit 1
         }
     
     - name: Run EmbeddedEngineer Automation
@@ -55,3 +56,16 @@ jobs:
           Write-Host "EmbeddedEngineer Automation failed with exit code: $LASTEXITCODE"
           exit $LASTEXITCODE
         }
+    
+    -  name: Setup MSBuild Path
+       uses: microsoft/setup-msbuild@v1.1
+        
+    -  name: Build Solution
+       run: msbuild TrafficLight/visualstudio/TrafficLights.sln /p:Configuration=Release
+
+    -  name: Publish Binary Artifact
+       uses: actions/upload-artifact@v4
+       with:
+          name: TrafficLightBinary
+          path: .\TrafficLight\visualstudio\x64\Release\*.exe
+          retention-days: 5
