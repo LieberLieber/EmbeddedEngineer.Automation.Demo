@@ -43,7 +43,7 @@ jobs:
           Write-Host "Error: EmbeddedEngineer directory not found"
           exit 1
         }
-    
+          
     - name: Run EmbeddedEngineer Automation
       shell: pwsh
       run: |
@@ -60,8 +60,13 @@ jobs:
     -  name: Setup MSBuild Path
        uses: microsoft/setup-msbuild@v3
         
-    -  name: Build Solution
-       run: msbuild TrafficLight/visualstudio/TrafficLights.sln /p:Configuration=Release
+    -  name: Build TrafficLights solution with MSBuild
+       shell: pwsh
+       run: |
+        $slnPath = "TrafficLight\visualstudio\TrafficLights.sln"
+        Write-Host "Building solution $slnPath with MSBuild 17.14.40 and target platform 10.0.20348.0"
+        msbuild $slnPath /p:Configuration=Release /p:Platform=x64 /p:PreferredToolArchitecture=x64 /p:WindowsTargetPlatformVersion=10.0.20348.0 /m
+
 
     -  name: Publish Binary Artifact
        uses: actions/upload-artifact@v7.0.0
