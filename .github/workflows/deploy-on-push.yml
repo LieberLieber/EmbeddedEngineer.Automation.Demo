@@ -94,7 +94,8 @@ jobs:
         $latestSdk = $availableSdks[0].Name
         Write-Host "Using Windows SDK version: $latestSdk"
 
-        msbuild $slnPath /p:Configuration=Release /p:Platform=x64 /p:PreferredToolArchitecture=x64 /p:WindowsTargetPlatformVersion=$latestSdk /m
+        # Force use of Visual Studio 2022 toolset (v143) instead of v140
+        msbuild $slnPath /p:Configuration=Release /p:Platform=x64 /p:PreferredToolArchitecture=x64 /p:WindowsTargetPlatformVersion=$latestSdk /p:PlatformToolset=v143 /m
 
 
     -  name: Publish Binary Artifact
